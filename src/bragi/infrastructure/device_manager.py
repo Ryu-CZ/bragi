@@ -4,6 +4,13 @@ import pulsectl
 
 
 class VirtualMicrophone:
+    """
+    Usage example:
+    ```
+    with VirtualMicrophone("VirtualMic") as virtual_mic:
+        print(virtual_mic.sink_name)
+    ```
+    """
     def __init__(self, sink_name="VirtualMic"):
         self.sink_name = sink_name
         self.module_index = None
@@ -25,3 +32,15 @@ class VirtualMicrophone:
 
     def __del__(self):
         self.unload_virtual_mic()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.unload_virtual_mic()
+
+    def __str__(self):
+        return f"VirtualMicrophone({self.sink_name})"
+
+    def __repr__(self):
+        return str(self)
