@@ -1,15 +1,16 @@
 # application/use_cases.py
 import signal
 import sys
-from bragi.domain.services import apply_noise_reduction
-from bragi.infrastructure.audio_io import AudioIO
-from bragi.infrastructure.device_manager import VirtualMicrophone
+from ..domain.services import DenoiseChunk
+from ..infrastructure.audio_io import AudioIO
+from ..infrastructure.device_manager import VirtualMicrophone
+from ..infrastructure.noise_reduction import apply_noise_reduction
 
-import threading
 
-
-def start_noise_cancellation():
-    virtual_mic = VirtualMicrophone()
+def start_noise_cancellation(denoise_fn: DenoiseChunk| None = None):
+    if denoise_fn is None:
+        denoise_fn = apply_noise_reduction
+    virtual_mic = VirtualMicrophone("bragi_microphone")
     sink_name = virtual_mic.sink_name
 
     # Initialize Audio IO
@@ -26,7 +27,7 @@ def start_noise_cancellation():
     try:
         while True:
             audio_chunk = audio_io.read_audio_chunk()
-            processed_chunk = apply_noise_reduction(audio_chunk)
+            processed_chunk = denoise_fn(audio_chunk)
             audio_io.write_audio_chunk(processed_chunk)
     except Exception as e:
         print(f"An error occurred: {e}")

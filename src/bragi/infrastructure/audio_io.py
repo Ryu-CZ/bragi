@@ -3,7 +3,7 @@
 import pyaudio
 import numpy as np
 
-from bragi.domain.models import AudioChunk
+from ..domain.models import AudioChunk
 
 
 class AudioIO:

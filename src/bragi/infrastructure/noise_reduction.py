@@ -3,8 +3,9 @@
 import librosa
 import tensorflow as tf
 import numpy as np
-from bragi.domain.models import AudioChunk
-from bragi.domain.services import apply_noise_reduction as domain_apply_noise_reduction
+
+from ..domain.models import AudioChunk
+from ..domain.services import DenoiseChunk
 
 
 class NoiseReducer:
@@ -28,7 +29,7 @@ class NoiseReducer:
         )
         return model
 
-    def reduce_noise(self, audio_chunk):
+    def reduce_noise(self, audio_chunk: AudioChunk) -> AudioChunk:
         # Preprocess audio data
         y = audio_chunk.data
         sr = audio_chunk.sample_rate
@@ -54,8 +55,6 @@ class NoiseReducer:
 
         return AudioChunk(data=y_denoised, sample_rate=sr)
 
+noise_reducer = NoiseReducer()# single instance rather than singleton
+apply_noise_reduction: DenoiseChunk = noise_reducer.reduce_noise
 
-# Override the domain function with the infrastructure implementation
-def apply_noise_reduction(audio_chunk):
-    noise_reducer = NoiseReducer()
-    return noise_reducer.reduce_noise(audio_chunk)

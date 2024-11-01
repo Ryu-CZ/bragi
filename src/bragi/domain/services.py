@@ -1,17 +1,20 @@
 # domain/services.py
+import typing
+from .models import AudioChunk
 
-
-def apply_noise_reduction(audio_chunk):
+class DenoiseChunk(typing.Protocol):
     """
-    Placeholder function for applying noise reduction.
-
-    Args:
-        audio_chunk (AudioChunk): The audio chunk to process.
-
-    Returns:
-        AudioChunk: The processed audio chunk.
+    Function for applying noise reduction.
     """
-    # The actual implementation will be provided in the Infrastructure Layer
-    raise NotImplementedError(
-        "This method should be implemented by the Infrastructure Layer."
-    )
+
+    def __call__(self, audio_chunk: AudioChunk) -> AudioChunk:
+        """
+        Args:
+            audio_chunk (AudioChunk): The audio chunk to process.
+
+        Returns:
+            AudioChunk: The processed audio chunk.
+        """
+        pass
+
+
